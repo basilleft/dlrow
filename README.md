@@ -40,6 +40,6 @@ A small three.js jump-and-run lives in `public/game/` and is published at `/game
 
 - Try it locally: `python3 -m http.server 8000 --directory public`, then open
   http://localhost:8000/game/
-- Run the tests: `node --test` (needs Node 20 or newer, no packages to install)
+- Run the tests: `node --test` (tested with Node 24, no packages to install)
 - Edit the level: the text grid `LEVEL_1` in `public/game/js/level.js`
 - three.js is self-hosted in `public/game/vendor/`; see the README there for the version

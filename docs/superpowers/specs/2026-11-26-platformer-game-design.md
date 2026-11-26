@@ -1,7 +1,7 @@
 # Platformer test game – design
 
 Date: 2026-11-26
-Status: approved by owner, not yet implemented
+Status: implemented on branch `game`
 
 ## Purpose
 
@@ -28,20 +28,20 @@ characters, levels, art or names of any existing game.
 ## Game rules
 
 - **Controls:** left/right arrow or A/D to move. Space, up arrow or W to jump.
-  Releasing the jump key early cuts the jump short, so a longer press jumps higher.
+  Releasing the jump key early cuts the jump short, so a longer press jumps higher. Game keys are ignored while Cmd, Ctrl or Alt is held, so browser shortcuts keep working.
 - **Coins:** removed when the player touches them; each raises the coin counter by one.
 - **Enemies:** one type. It walks horizontally at constant speed and reverses direction
   when it hits a solid tile or when the tile ahead of it has no solid tile underneath
   (platform edge). It never leaves its platform.
 - **Stomp:** if the player overlaps an enemy while moving downward and the player's
   bottom edge is above the enemy's vertical centre, the enemy is removed and the player
-  gets a small upward bounce. Any other overlap with an enemy restarts the level.
+  gets a small upward bounce. Any other overlap with an enemy restarts the level. Holding the jump key during a stomp gives a higher bounce.
 - **Pits:** if the player's top edge falls below the bottom row of the level, the level
   restarts.
 - **Restart:** resets the player to the start position and restores all coins and
   enemies. The coin counter returns to zero. There are no lives.
 - **Goal:** touching the flag ends the level and shows "Level geschafft!" with the
-  number of coins collected out of the total. Enter restarts the level.
+  number of coins collected out of the total. Enter restarts the level; it must be a fresh key press, not a key already held when the flag was reached.
 - The player cannot leave the level on the left or right edge.
 
 ## Level format

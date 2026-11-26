@@ -13,7 +13,7 @@ deploy. Start simple (plain static site), grow later.
 - **No SSH** on this tariff (SSH starts at the Premium tariff). Deploys therefore use
   **FTPS** (FTP over TLS), not rsync/SFTP.
 - **Repository:** GitHub (`basilleft/dlrow`). CI/CD: GitHub Actions.
-- **Site type:** plain static HTML/CSS. No build step, no Node.js, no framework yet.
+- **Site type:** plain static HTML/CSS. No build step and no framework. Node.js is used only to run the game's tests locally, never in the deploy.
 - **Audience / language:** German site (`lang="de"`). Owner is based in Germany.
 
 ## Repository structure
