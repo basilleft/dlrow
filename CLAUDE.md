@@ -1,0 +1,86 @@
+# CLAUDE.md – Project handover
+
+## Goal
+
+Replace a very old website hosted at ALL-INKL.COM with a fresh, modern setup
+managed in Git. The old content is NOT needed and will be deleted by the first
+deploy. Start simple (plain static site), grow later.
+
+## Current setup
+
+- **Domain:** www.dlrow.de
+- **Hosting:** ALL-INKL.COM, tariff **PrivatPlus**, managed via KAS (https://kas.all-inkl.com).
+- **No SSH** on this tariff (SSH starts at the Premium tariff). Deploys therefore use
+  **FTPS** (FTP over TLS), not rsync/SFTP.
+- **Repository:** GitHub (`basilleft/dlrow`). CI/CD: GitHub Actions.
+- **Site type:** plain static HTML/CSS. No build step, no Node.js, no framework yet.
+- **Audience / language:** German site (`lang="de"`). Owner is based in Germany.
+
+## Repository structure
+
+```
+public/              -> exactly what is uploaded to the web server
+  index.html         -> "coming soon" placeholder
+  impressum.html     -> legal notice, PLACEHOLDER content (required in Germany)
+  datenschutz.html   -> privacy policy, PLACEHOLDER content (required in Germany)
+  404.html           -> custom error page (wired via .htaccess)
+  css/style.css      -> single stylesheet, CSS variables, light + dark mode
+  .htaccess          -> HTTPS redirect, security headers, caching, Options -Indexes
+  robots.txt
+.github/workflows/deploy.yml -> deploy on push to main (+ manual workflow_dispatch)
+README.md, .gitignore, .editorconfig
+```
+
+## Deployment
+
+- Trigger: push to `main` (or manual run in the Actions tab).
+- Runs `lftp mirror --reverse --delete` of `public/` to `/` of the deploy FTP user,
+  with `ftp:ssl-force`, `ftp:ssl-protect-data` and certificate verification on.
+- Secrets in GitHub (Settings → Secrets and variables → Actions):
+  - `FTP_HOST` – the ALL-INKL server name from the FTP user's info button
+    (`wXXXXXXX.kasserver.com` style). Must NOT be the domain, or TLS verification fails.
+  - `FTP_USER` – dedicated deploy FTP user (not the main user `w015acbf`).
+  - `FTP_PASSWORD` – its password. Must not contain a comma (lftp `-u user,pass` syntax).
+    Improvement option: switch to `lftp --env-password` with `LFTP_PASSWORD` to remove
+    this restriction.
+
+### Critical safety rules
+
+- `--delete` removes every file on the server that is not in `public/`. The deploy FTP
+  user's home directory MUST be the website folder only, never the webspace root `/`.
+  The main FTP user has `/` as its directory and must never be used in CI.
+- Never commit credentials, `.env` files or FTP passwords. Secrets live only in GitHub.
+- Do not change the deploy target path or remove `--delete` without telling the owner.
+
+## Status
+
+Done:
+- [x] Starter project created (files above)
+- [x] Deploy workflow written
+- [x] Backup of the old site taken via FTP (owner confirmed 2026-11-26)
+- [x] Domain's target folder checked in KAS → Domain (owner confirmed 2026-11-26)
+- [x] Dedicated deploy FTP user created with that folder as its path (owner confirmed 2026-11-26)
+- [x] Let's Encrypt enabled (owner confirmed 2026-11-26)
+
+Open:
+- [ ] Three GitHub secrets added, first push done, Actions run green
+
+## Open decisions / next steps
+
+1. Fill `impressum.html` and `datenschutz.html` with real data (owner provides details;
+   Claude is not a lawyer, recommend a generator such as e-recht24 or legal advice).
+2. Replace the placeholder email `info@example.de` everywhere.
+3. Define what the site is actually about, then design real content.
+4. Optionally migrate to a static site generator (Astro or Hugo) once the site grows:
+   add a build step in the workflow and deploy the build output folder instead of `public/`.
+5. After HTTPS works reliably for a while: enable HSTS (commented line in `.htaccess`,
+   or KAS's own HSTS option – not both).
+
+## Conventions
+
+- Keep it dependency-free unless a framework is explicitly agreed.
+- No third-party requests (no Google Fonts, CDNs, analytics, embeds) without discussing
+  GDPR implications first. Fonts are system fonts; self-host any custom font.
+- Accessible by default: semantic HTML, visible focus states, good contrast,
+  responsive down to mobile, light and dark mode via CSS variables.
+- Small, focused commits; work on branches and merge to `main` to deploy.
