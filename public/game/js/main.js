@@ -16,6 +16,7 @@ if (isWebGLAvailable()) {
 } else {
   canvas.hidden = true;
   document.getElementById('help').hidden = true;
+  document.getElementById('coins').hidden = true;
   document.getElementById('no-webgl').hidden = false;
 }
 

@@ -23,7 +23,6 @@ export function isWebGLAvailable() {
 export function createView(canvas, level) {
   // --- renderer, scene, camera -------------------------------------------
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
 
   const scene = new THREE.Scene();
@@ -31,7 +30,8 @@ export function createView(canvas, level) {
 
   const camera = new THREE.PerspectiveCamera(CAMERA_FOV, 1, 0.1, 200);
   const cameraY = level.height / 2;
-  let cameraX = level.player.x;
+  // Unknown until the first frame: the aspect ratio is only known after resize().
+  let cameraX = null;
 
   // --- lights --------------------------------------------------------------
   // Soft light from the sky and the ground, so shadows are not pitch black.
@@ -104,7 +104,9 @@ export function createView(canvas, level) {
   // --- size handling -------------------------------------------------------------
   function resize() {
     const width = window.innerWidth;
-    const height = window.innerHeight;
+    const height = Math.max(1, window.innerHeight); // never 0, so the aspect stays finite
+    // Read again on every resize: the window may move to a screen with another pixel ratio.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -114,6 +116,13 @@ export function createView(canvas, level) {
   function visibleHalfWidth() {
     const halfHeight = Math.tan(THREE.MathUtils.degToRad(CAMERA_FOV / 2)) * CAMERA_DISTANCE;
     return halfHeight * camera.aspect;
+  }
+
+  // Keeps a camera x inside the level, so the view never shows beyond its ends.
+  function clampCameraX(x) {
+    const half = visibleHalfWidth();
+    if (level.width <= half * 2) return level.width / 2; // level narrower than the view: centre it
+    return THREE.MathUtils.clamp(x, half, level.width - half);
   }
 
   function place(mesh, box) {
@@ -137,12 +146,14 @@ export function createView(canvas, level) {
     });
 
     // The camera follows the player sideways but stops at the level ends.
-    const half = visibleHalfWidth();
     const playerX = game.player.x + game.player.w / 2;
-    const targetX = level.width <= half * 2
-      ? level.width / 2
-      : THREE.MathUtils.clamp(playerX, half, level.width - half);
-    cameraX += (targetX - cameraX) * Math.min(1, CAMERA_FOLLOW * dt);
+    const targetX = clampCameraX(playerX);
+    if (cameraX === null) {
+      cameraX = targetX; // first frame: start in place, no pan
+    } else {
+      cameraX += (targetX - cameraX) * Math.min(1, CAMERA_FOLLOW * dt);
+      cameraX = clampCameraX(cameraX); // also holds when the window gets wider
+    }
     camera.position.set(cameraX, cameraY + 1, CAMERA_DISTANCE);
     camera.lookAt(cameraX, cameraY, 0);
 
