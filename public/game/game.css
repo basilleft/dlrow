@@ -70,8 +70,72 @@ html, body {
   display: none !important;
 }
 
+/* Access code screen: covers the whole page until the right code is entered. */
+#gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+  background: #8ecae6;
+  color: #1b1b1b;
+}
+
+#gate h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+}
+
+#gate label {
+  font-weight: 600;
+}
+
+#gate input,
+#gate button {
+  width: 12rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid #1b1b1b;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-size: 1.25rem;
+}
+
+#gate input {
+  background: #fff;
+  color: #1b1b1b;
+  text-align: center;
+  letter-spacing: 0.3em;
+}
+
+#gate button {
+  background: #1b1b1b;
+  color: #fff;
+  cursor: pointer;
+}
+
+#gate input:focus-visible,
+#gate button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+#gate-error {
+  margin: 0;
+  min-height: 1.5rem;
+  font-weight: 600;
+  color: #9d0208;
+}
+
 /* Legal links: bottom right, clickable (unlike the other .hud pills). */
 #legal {
+  z-index: 11; /* stays above the access code screen */
   right: 1rem;
   bottom: 1rem;
   display: flex;

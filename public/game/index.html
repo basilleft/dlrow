@@ -16,10 +16,17 @@
   <p id="help" class="hud">← → oder A / D: laufen · Leertaste: springen · Gegner von oben treffen</p>
   <p id="message" hidden></p>
   <p id="no-webgl" hidden>Dieses Spiel benötigt WebGL 2. Bitte einen aktuellen Browser verwenden.</p>
+  <form id="gate" hidden>
+    <h1>Jump &amp; Run</h1>
+    <label for="pin">Zugangscode</label>
+    <input id="pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" required>
+    <button type="submit">Öffnen</button>
+    <p id="gate-error" role="alert" hidden></p>
+  </form>
   <nav id="legal" class="hud">
     <a href="/impressum.html">Impressum</a>
     <a href="/datenschutz.html">Datenschutz</a>
   </nav>
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/boot.js"></script>
 </body>
 </html>

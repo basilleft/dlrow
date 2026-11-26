@@ -24,6 +24,7 @@ characters, levels, art or names of any existing game.
 | Assets | None. Everything is built from three.js primitives |
 | UI language | German, matching the site (`lang="de"`) |
 | Discoverability | Not linked from the start page; reachable by URL only |
+| Access | The page asks for a numeric access code before the game loads (added after the first version, at the owner's request). A courtesy lock, not real security: the check is client-side and only keeps casual visitors out |
 
 ## Game rules
 
@@ -72,7 +73,9 @@ All under `public/game/`.
 
 | File | Responsibility | Depends on |
 |---|---|---|
-| `index.html` | Page shell: canvas, HUD overlay elements, loads `js/main.js` as a module | – |
+| `index.html` | Page shell: access code form, canvas, HUD overlay elements, loads `js/boot.js` as a module | – |
+| `js/gate.js` | Access code check: stores only a SHA-256 hash of the code; `hashPin`, `checkPin`. No DOM | – |
+| `js/boot.js` | Entry point: shows the access code form, remembers the unlock for the tab (`sessionStorage`), then loads `main.js` with a dynamic import, so three.js is only downloaded after the right code | gate, DOM |
 | `game.css` | Full-window canvas, HUD and message styling | – |
 | `vendor/` | three.js module files, unmodified, plus its MIT `LICENSE` | – |
 | `js/main.js` | Bootstraps, runs the fixed-step loop, wires the other modules | all below |

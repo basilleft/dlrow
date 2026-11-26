@@ -29,7 +29,8 @@ public/              -> exactly what is uploaded to the web server
   robots.txt
   game/              -> three.js platformer test game, live at /game/ (not linked from the start page)
     index.html, game.css
-    js/              -> level, physics, player, enemy, game (rules, no three.js) + input, hud, render, main
+    js/              -> boot + gate (access code), level, physics, player, enemy, game (rules,
+                        no three.js) + input, hud, render, main
     vendor/          -> self-hosted three.js 0.187.0 (unmodified) + LICENSE
 tests/               -> Node tests for the game rules (`node --test`), never deployed
 package.json         -> only "type": "module" and the test script; NO dependencies
@@ -90,6 +91,11 @@ Open:
 - Game code: only `public/game/js/render.js` imports three.js. Game rules stay free of
   three.js and the DOM so they can be tested with `node --test`. Run the tests before
   every commit that touches `public/game/js/`.
+- The game page asks for an access code (`public/game/js/gate.js`, UI in `boot.js`). It is a
+  courtesy lock only: the check runs in the browser and the repo is public, so it does not
+  protect the files. Only the hash is stored; never write the code itself into the repo
+  (code, tests, docs, commit messages). Real protection would need server-side Basic Auth
+  with the password file outside the deployed folder.
 - ES modules do not load from `file://`. To try the site locally:
   `python3 -m http.server 8000 --directory public`, then open http://localhost:8000/game/.
 - No third-party requests (no Google Fonts, CDNs, analytics, embeds) without discussing

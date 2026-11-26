@@ -42,4 +42,6 @@ A small three.js jump-and-run lives in `public/game/` and is published at `/game
   http://localhost:8000/game/
 - Run the tests: `node --test` (tested with Node 24, no packages to install)
 - Edit the level: the text grid `LEVEL_1` in `public/game/js/level.js`
+- The page asks for an access code first. To change it, see the comment at the top of
+  `public/game/js/gate.js`. It only keeps casual visitors out; it is not real protection
 - three.js is self-hosted in `public/game/vendor/`; see the README there for the version

@@ -1,4 +1,5 @@
-// Entry point: builds everything and runs the game loop.
+// The game itself: builds everything and runs the game loop.
+// Loaded by boot.js once the access code was entered.
 
 import { LEVEL_1, parseLevel } from './level.js';
 import { createGame, stepGame } from './game.js';
