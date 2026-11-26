@@ -59,6 +59,10 @@ test('LEVEL_1 meets the spec', () => {
     assert.equal(isSolid(level, e.x, e.y - 1), true, `enemy at ${e.x},${e.y} stands on a block`);
   }
   assert.equal(isSolid(level, level.player.x, level.player.y - 1), true, 'player starts on a block');
-  const pitColumns = level.solid[0].filter((s) => !s).length;
-  assert.ok(pitColumns >= 6, 'at least two pits in the floor');
+  // Count separate pits: runs of consecutive empty columns in the bottom row.
+  let pits = 0;
+  level.solid[0].forEach((solid, x) => {
+    if (!solid && (x === 0 || level.solid[0][x - 1])) pits += 1;
+  });
+  assert.ok(pits >= 2, `at least two pits in the floor, got ${pits}`);
 });

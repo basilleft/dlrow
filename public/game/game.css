@@ -69,3 +69,29 @@ html, body {
 [hidden] {
   display: none !important;
 }
+
+/* Legal links: bottom right, clickable (unlike the other .hud pills). */
+#legal {
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  pointer-events: auto;
+}
+
+#legal a {
+  color: #fff;
+}
+
+#legal a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* On narrow windows the help pill moves up so it never overlaps the links. */
+@media (max-width: 900px) {
+  #help {
+    bottom: 3.5rem;
+  }
+}

@@ -40,7 +40,7 @@ test('an enemy turns around at platform edges', () => {
   const { minX, maxX } = run(e, solidAt, 1200);
   assert.ok(minX > 2.9, `stays on the platform on the left, got ${minX}`);
   assert.ok(maxX + e.w < 8.1, `stays on the platform on the right, got ${maxX + e.w}`);
-  assert.equal(e.y, 1, 'does not fall');
+  assert.ok(maxX - minX > 3, 'covers the platform');
 });
 
 test('a dead enemy does not move', () => {

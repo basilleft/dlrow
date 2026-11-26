@@ -109,3 +109,31 @@ test('LEVEL_1 can be finished: a look-ahead bot reaches the flag without dying',
   assert.equal(died, false, 'bot never had to restart');
   assert.equal(game.status, 'won');
 });
+
+test('Enter held since before the flag does not restart; a fresh press does', () => {
+  const game = createGame(parseLevel(['P.o.F', '#####']));
+  const enter = { ...RIGHT, confirm: true };
+  steps(game, enter, 60);
+  assert.equal(game.status, 'won');
+  for (let i = 0; i < 10; i++) {
+    stepGame(game, enter, DT);
+    assert.equal(game.status, 'won', 'held Enter does not restart');
+  }
+  stepGame(game, NONE, DT); // release
+  assert.equal(game.status, 'won');
+  stepGame(game, { ...NONE, confirm: true }, DT); // press again
+  assert.equal(game.status, 'playing');
+});
+
+test('Enter while playing changes nothing', () => {
+  const a = createGame(parseLevel(['P.o....F', '########']));
+  const b = createGame(parseLevel(['P.o....F', '########']));
+  for (let i = 0; i < 30; i++) {
+    stepGame(a, { ...RIGHT, confirm: true }, DT);
+    stepGame(b, RIGHT, DT);
+  }
+  assert.equal(a.status, 'playing');
+  assert.equal(a.coinCount, b.coinCount);
+  assert.equal(a.player.x, b.player.x);
+  assert.equal(a.player.y, b.player.y);
+});

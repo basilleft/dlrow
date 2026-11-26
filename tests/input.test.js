@@ -44,3 +44,20 @@ test('losing focus releases all keys', () => {
   target.dispatchEvent(new Event('blur'));
   assert.equal(input.right, false);
 });
+
+test('game keys are ignored while Cmd, Ctrl or Alt is held', () => {
+  const cases = [
+    ['metaKey', 'KeyA', 'left'],
+    ['ctrlKey', 'KeyD', 'right'],
+    ['altKey', 'ArrowLeft', 'left'],
+  ];
+  for (const [modifier, code, action] of cases) {
+    const target = new EventTarget();
+    const input = createInput(target);
+    const event = key('keydown', code);
+    event[modifier] = true;
+    target.dispatchEvent(event);
+    assert.equal(event.defaultPrevented, false, `${modifier}+${code} is left to the browser`);
+    assert.equal(input[action], false, `${modifier}+${code} does not press ${action}`);
+  }
+});
