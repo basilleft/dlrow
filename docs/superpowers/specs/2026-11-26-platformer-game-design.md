@@ -75,7 +75,8 @@ All under `public/game/`.
 | `index.html` | Page shell: canvas, HUD overlay elements, loads `js/main.js` as a module | – |
 | `game.css` | Full-window canvas, HUD and message styling | – |
 | `vendor/` | three.js module files, unmodified, plus its MIT `LICENSE` | – |
-| `js/main.js` | Bootstraps, owns the game state, runs the fixed-step loop, wires the other modules | all below |
+| `js/main.js` | Bootstraps, runs the fixed-step loop, wires the other modules | all below |
+| `js/game.js` | Game state and the rules of one time step: stomp, coins, flag, pit, restart | level, physics, player, enemy |
 | `js/level.js` | Level text grid and parser | – |
 | `js/physics.js` | Pure functions: move a box through the tile grid with collision; box overlap test | – |
 | `js/player.js` | Player update: input to velocity, gravity, jump, uses physics | physics |
@@ -84,13 +85,13 @@ All under `public/game/`.
 | `js/render.js` | The only module that imports three.js: scene, meshes, lights, shadows, camera follow | three.js |
 | `js/hud.js` | Updates coin counter and message overlay | DOM |
 
-Rule: game logic (`level`, `physics`, `player`, `enemy`) never imports three.js or
+Rule: game logic (`level`, `physics`, `player`, `enemy`, `game`) never imports three.js or
 touches the DOM. `render.js` reads game state and draws it; it never changes it.
 This keeps the rules testable in Node and keeps all three.js code in one file.
 
 ## Game state
 
-A single plain object owned by `main.js`:
+A single plain object created by `createGame` in `game.js` and held by `main.js`:
 
 - `level`: parsed level (static)
 - `player`: position, velocity, size, `onGround`

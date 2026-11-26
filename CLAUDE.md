@@ -27,6 +27,13 @@ public/              -> exactly what is uploaded to the web server
   css/style.css      -> single stylesheet, CSS variables, light + dark mode
   .htaccess          -> HTTPS redirect, security headers, caching, Options -Indexes
   robots.txt
+  game/              -> three.js platformer test game, live at /game/ (not linked from the start page)
+    index.html, game.css
+    js/              -> level, physics, player, enemy, game (rules, no three.js) + input, hud, render, main
+    vendor/          -> self-hosted three.js 0.187.0 (unmodified) + LICENSE
+tests/               -> Node tests for the game rules (`node --test`), never deployed
+package.json         -> only "type": "module" and the test script; NO dependencies
+docs/superpowers/    -> design specs and implementation plans
 .github/workflows/deploy.yml -> deploy on push to main (+ manual workflow_dispatch)
 README.md, .gitignore, .editorconfig
 ```
@@ -78,7 +85,13 @@ Open:
 
 ## Conventions
 
-- Keep it dependency-free unless a framework is explicitly agreed.
+- Keep it dependency-free unless a framework is explicitly agreed. Agreed so far:
+  three.js for `public/game/`, self-hosted in `public/game/vendor/` (no npm install, no CDN).
+- Game code: only `public/game/js/render.js` imports three.js. Game rules stay free of
+  three.js and the DOM so they can be tested with `node --test`. Run the tests before
+  every commit that touches `public/game/js/`.
+- ES modules do not load from `file://`. To try the site locally:
+  `python3 -m http.server 8000 --directory public`, then open http://localhost:8000/game/.
 - No third-party requests (no Google Fonts, CDNs, analytics, embeds) without discussing
   GDPR implications first. Fonts are system fonts; self-host any custom font.
 - Accessible by default: semantic HTML, visible focus states, good contrast,
