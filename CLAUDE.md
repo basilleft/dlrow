@@ -13,7 +13,7 @@ deploy. Start simple (plain static site), grow later.
 - **No SSH** on this tariff (SSH starts at the Premium tariff). Deploys therefore use
   **FTPS** (FTP over TLS), not rsync/SFTP.
 - **Repository:** GitHub (`basilleft/dlrow`). CI/CD: GitHub Actions.
-- **Site type:** plain static HTML/CSS. No build step, no Node.js, no framework yet.
+- **Site type:** plain static HTML/CSS. No build step and no framework. Node.js is used only to run the game's tests locally, never in the deploy.
 - **Audience / language:** German site (`lang="de"`). Owner is based in Germany.
 
 ## Repository structure
@@ -27,6 +27,14 @@ public/              -> exactly what is uploaded to the web server
   css/style.css      -> single stylesheet, CSS variables, light + dark mode
   .htaccess          -> HTTPS redirect, security headers, caching, Options -Indexes
   robots.txt
+  game/              -> three.js platformer test game, live at /game/ (not linked from the start page)
+    index.html, game.css
+    js/              -> boot + gate (access code), level, physics, player, enemy, game (rules,
+                        no three.js) + input, hud, render, main
+    vendor/          -> self-hosted three.js 0.187.0 (unmodified) + LICENSE
+tests/               -> Node tests for the game rules (`node --test`), never deployed
+package.json         -> only "type": "module" and the test script; NO dependencies
+docs/superpowers/    -> design specs and implementation plans
 .github/workflows/deploy.yml -> deploy on push to main (+ manual workflow_dispatch)
 README.md, .gitignore, .editorconfig
 ```
@@ -78,7 +86,18 @@ Open:
 
 ## Conventions
 
-- Keep it dependency-free unless a framework is explicitly agreed.
+- Keep it dependency-free unless a framework is explicitly agreed. Agreed so far:
+  three.js for `public/game/`, self-hosted in `public/game/vendor/` (no npm install, no CDN).
+- Game code: only `public/game/js/render.js` imports three.js. Game rules stay free of
+  three.js and the DOM so they can be tested with `node --test`. Run the tests before
+  every commit that touches `public/game/js/`.
+- The game page asks for an access code (`public/game/js/gate.js`, UI in `boot.js`). It is a
+  courtesy lock only: the check runs in the browser and the repo is public, so it does not
+  protect the files. Only the hash is stored; never write the code itself into the repo
+  (code, tests, docs, commit messages). Real protection would need server-side Basic Auth
+  with the password file outside the deployed folder.
+- ES modules do not load from `file://`. To try the site locally:
+  `python3 -m http.server 8000 --directory public`, then open http://localhost:8000/game/.
 - No third-party requests (no Google Fonts, CDNs, analytics, embeds) without discussing
   GDPR implications first. Fonts are system fonts; self-host any custom font.
 - Accessible by default: semantic HTML, visible focus states, good contrast,

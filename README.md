@@ -33,3 +33,15 @@ Check progress under the repo's **Actions** tab.
 **Warning:** the deploy uses `--delete`, so files on the server that are not
 in `public/` will be removed. That's intended, but make sure the FTP user
 only has access to this website's folder.
+
+## Game
+
+A small three.js jump-and-run lives in `public/game/` and is published at `/game/`.
+
+- Try it locally: `python3 -m http.server 8000 --directory public`, then open
+  http://localhost:8000/game/
+- Run the tests: `node --test` (tested with Node 24, no packages to install)
+- Edit the level: the text grid `LEVEL_1` in `public/game/js/level.js`
+- The page asks for an access code first. To change it, see the comment at the top of
+  `public/game/js/gate.js`. It only keeps casual visitors out; it is not real protection
+- three.js is self-hosted in `public/game/vendor/`; see the README there for the version
