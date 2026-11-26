@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jump &amp; Run – dlrow.de</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="game.css">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="game" aria-label="Jump-and-Run-Spiel"></canvas>
+  <p id="coins" class="hud"></p>
+  <p id="help" class="hud">← → oder A / D: laufen · Leertaste: springen · Gegner von oben treffen</p>
+  <p id="message" hidden></p>
+  <p id="no-webgl" hidden>Dieses Spiel benötigt WebGL 2. Bitte einen aktuellen Browser verwenden.</p>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
