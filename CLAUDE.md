@@ -30,7 +30,7 @@ public/              -> exactly what is uploaded to the web server
   game/              -> three.js platformer test game, live at /game/ (not linked from the start page)
     index.html, game.css
     js/              -> boot + gate (access code), level, physics, player, enemy, game (rules,
-                        no three.js) + input, hud, render, main
+                        no three.js) + input, hud, render, character, main
     vendor/          -> self-hosted three.js 0.187.0 (unmodified) + LICENSE
 tests/               -> Node tests for the game rules (`node --test`), never deployed
 package.json         -> only "type": "module" and the test script; NO dependencies
@@ -89,7 +89,8 @@ Open: nothing — setup is complete. See next steps below.
 
 - Keep it dependency-free unless a framework is explicitly agreed. Agreed so far:
   three.js for `public/game/`, self-hosted in `public/game/vendor/` (no npm install, no CDN).
-- Game code: only `public/game/js/render.js` imports three.js. Game rules stay free of
+- Game code: only `public/game/js/render.js` and `public/game/js/character.js` import
+  three.js. Game rules stay free of
   three.js and the DOM so they can be tested with `node --test`. Run the tests before
   every commit that touches `public/game/js/`.
 - The game page asks for an access code (`public/game/js/gate.js`, UI in `boot.js`). It is a

@@ -7,6 +7,7 @@
 // game sits on the plane z = 0 and the camera looks at it from positive z.
 
 import * as THREE from 'three';
+import { createHero } from './character.js';
 
 const CAMERA_DISTANCE = 22; // how far the camera stands back from the play plane
 const CAMERA_FOV = 40;      // vertical field of view in degrees
@@ -82,8 +83,9 @@ export function createView(canvas, level) {
     return mesh;
   }
 
-  // --- player: a capsule 0.7 wide and 0.9 tall ---------------------------------
-  const playerMesh = addMesh(new THREE.CapsuleGeometry(0.35, 0.2, 8, 16), 0x2a9d8f);
+  // --- player: the Spiky Hero (see character.js) --------------------------------
+  const hero = createHero();
+  scene.add(hero.group);
 
   // --- enemies and coins: one mesh per entry in the level ----------------------
   const enemyGeometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
@@ -132,7 +134,7 @@ export function createView(canvas, level) {
   // --- draw one frame --------------------------------------------------------------
   // dt: seconds since the last frame. time: seconds since the page loaded.
   function render(game, dt, time) {
-    place(playerMesh, game.player);
+    hero.group.position.set(game.player.x + game.player.w / 2, game.player.y, 0);
 
     game.enemies.forEach((enemy, i) => {
       enemyMeshes[i].visible = enemy.alive;
