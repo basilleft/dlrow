@@ -92,3 +92,61 @@ export function createHero() {
     facingEase: FACING_ANGLE, wasOnGround: false, runPhase: 0, squashLeft: 0,
   };
 }
+
+// Applies position, facing and animation to the hero, from the player state
+// alone (vx, vy, onGround, facing) plus time. Called once per frame.
+export function poseHero(hero, player, time, dt) {
+  const grounded = player.onGround;
+  const running = grounded && player.vx !== 0;
+
+  // Turn toward the movement direction, easing so the turn is visible.
+  const targetAngle = player.facing * FACING_ANGLE;
+  hero.facingEase += (targetAngle - hero.facingEase) * Math.min(1, FACING_EASE * dt);
+  hero.group.rotation.y = hero.facingEase;
+
+  // The landing squash starts the moment the ground is regained.
+  if (grounded && !hero.wasOnGround) hero.squashLeft = SQUASH_TIME;
+  hero.wasOnGround = grounded;
+  hero.squashLeft = Math.max(0, hero.squashLeft - dt);
+
+  let stretch = 1; // vertical scale; width compensates below to keep volume
+  let bob = 0;
+  let lean = 0;
+
+  if (!grounded) {
+    // Jump / fall: arms up, legs tucked, slight stretch while rising.
+    hero.armL.rotation.set(0, 0, 2.6);
+    hero.armR.rotation.set(0, 0, -2.6);
+    hero.legL.rotation.set(0.5, 0, 0);
+    hero.legR.rotation.set(-0.3, 0, 0);
+    stretch = player.vy > 0 ? 1.12 : 1.04;
+  } else if (running) {
+    // Run cycle: limbs swing with distance covered, full speed = demo cadence.
+    hero.runPhase += RUN_SWING_RATE * (Math.abs(player.vx) / MOVE_SPEED) * dt;
+    const swing = Math.sin(hero.runPhase);
+    hero.legL.rotation.set(swing * 0.75, 0, 0);
+    hero.legR.rotation.set(-swing * 0.75, 0, 0);
+    hero.armL.rotation.set(-swing * 0.6, 0, 0.25);
+    hero.armR.rotation.set(swing * 0.6, 0, -0.25);
+    bob = Math.abs(Math.cos(hero.runPhase)) * 0.04;
+    lean = 0.14 * player.facing;
+  } else {
+    // Idle: resting pose with gentle breathing.
+    hero.armL.rotation.set(0, 0, 0.25);
+    hero.armR.rotation.set(0, 0, -0.25);
+    hero.legL.rotation.set(0, 0, 0);
+    hero.legR.rotation.set(0, 0, 0);
+    stretch = 1 + Math.sin(time * 2.5) * 0.02;
+  }
+
+  // The squash overrides the stretch, easing back to full height.
+  if (hero.squashLeft > 0) {
+    const recovered = 1 - hero.squashLeft / SQUASH_TIME; // 0 -> 1
+    stretch = 0.78 + 0.22 * recovered;
+  }
+
+  hero.group.rotation.z = -lean; // lean into the running direction
+  const widen = 1 / Math.sqrt(stretch);
+  hero.model.scale.set(SCALE * widen, SCALE * stretch, SCALE * widen);
+  hero.group.position.set(player.x + player.w / 2, player.y + bob, 0);
+}

@@ -7,7 +7,7 @@
 // game sits on the plane z = 0 and the camera looks at it from positive z.
 
 import * as THREE from 'three';
-import { createHero } from './character.js';
+import { createHero, poseHero } from './character.js';
 
 const CAMERA_DISTANCE = 22; // how far the camera stands back from the play plane
 const CAMERA_FOV = 40;      // vertical field of view in degrees
@@ -134,7 +134,7 @@ export function createView(canvas, level) {
   // --- draw one frame --------------------------------------------------------------
   // dt: seconds since the last frame. time: seconds since the page loaded.
   function render(game, dt, time) {
-    hero.group.position.set(game.player.x + game.player.w / 2, game.player.y, 0);
+    poseHero(hero, game.player, time, dt);
 
     game.enemies.forEach((enemy, i) => {
       enemyMeshes[i].visible = enemy.alive;
