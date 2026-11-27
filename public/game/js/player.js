@@ -9,13 +9,16 @@ export const MAX_FALL_SPEED = 20;
 export function createPlayer(start) {
   return {
     x: start.x + 0.15, y: start.y, w: 0.7, h: 0.9,
-    vx: 0, vy: 0, onGround: false, jumpHeld: false,
+    vx: 0, vy: 0, onGround: false, jumpHeld: false, facing: 1,
   };
 }
 
 // input is { left, right, jump } booleans.
 export function updatePlayer(player, input, dt, solidAt) {
   player.vx = ((input.right ? 1 : 0) - (input.left ? 1 : 0)) * MOVE_SPEED;
+  // Which way the player last moved; the renderer turns the character with it.
+  if (player.vx > 0) player.facing = 1;
+  else if (player.vx < 0) player.facing = -1;
 
   // Jump only on a fresh key press, not while the key stays held.
   if (input.jump && !player.jumpHeld && player.onGround) player.vy = JUMP_SPEED;

@@ -70,3 +70,23 @@ test('releasing jump caps the upward speed', () => {
   updatePlayer(p, NONE, DT, floor);
   assert.ok(p.vy <= JUMP_CUT_SPEED);
 });
+
+test('a new player faces right', () => {
+  const p = createPlayer({ x: 3, y: 1 });
+  assert.equal(p.facing, 1);
+});
+
+test('facing follows the movement direction', () => {
+  const p = standingPlayer();
+  updatePlayer(p, { ...NONE, left: true }, DT, floor);
+  assert.equal(p.facing, -1);
+  updatePlayer(p, { ...NONE, right: true }, DT, floor);
+  assert.equal(p.facing, 1);
+});
+
+test('facing keeps its last direction after stopping', () => {
+  const p = standingPlayer();
+  updatePlayer(p, { ...NONE, left: true }, DT, floor);
+  updatePlayer(p, NONE, DT, floor);
+  assert.equal(p.facing, -1);
+});
