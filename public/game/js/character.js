@@ -88,8 +88,9 @@ export function createHero() {
 
   return {
     group, model, head, body, armL, armR, legL, legR,
-    // Animation state, owned by the render layer (never game state):
-    facingEase: FACING_ANGLE, wasOnGround: false, runPhase: 0, squashLeft: 0,
+    // Animation state, owned by the render layer (never game state).
+    // wasOnGround starts true so the hero does not play a landing squash at spawn.
+    facingEase: FACING_ANGLE, wasOnGround: true, runPhase: 0, squashLeft: 0,
   };
 }
 

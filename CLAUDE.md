@@ -90,8 +90,8 @@ Open: nothing — setup is complete. See next steps below.
 - Keep it dependency-free unless a framework is explicitly agreed. Agreed so far:
   three.js for `public/game/`, self-hosted in `public/game/vendor/` (no npm install, no CDN).
 - Game code: only `public/game/js/render.js` and `public/game/js/character.js` import
-  three.js. Game rules stay free of
-  three.js and the DOM so they can be tested with `node --test`. Run the tests before
+  three.js. Game rules stay free of three.js and the DOM so they can be tested with
+  `node --test`. Run the tests before
   every commit that touches `public/game/js/`.
 - The game page asks for an access code (`public/game/js/gate.js`, UI in `boot.js`). It is a
   courtesy lock only: the check runs in the browser and the repo is public, so it does not

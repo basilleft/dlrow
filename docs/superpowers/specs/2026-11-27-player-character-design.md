@@ -83,8 +83,10 @@ initial value, follows movement each direction, and holds after stopping.
 ## Code structure
 
 - New module `public/game/js/character.js`. It imports three.js and exports:
-  - `createHero()` → `{ group, head, body, armL, armR, legL, legR }` — the
-    built mesh group with the limbs needed for posing.
+  - `createHero()` → `{ group, model, head, body, armL, armR, legL, legR }` plus
+    render-layer animation state (`facingEase`, `wasOnGround`, `runPhase`,
+    `squashLeft`) — the built mesh group with the limbs needed for posing;
+    `model` is the inner group carrying the base scale.
   - `poseHero(hero, player, time, dt)` → applies position, facing and the
     animation table above. Keeps its own landing-squash timer internally.
 - `render.js` replaces the capsule with `createHero()`, adds `hero.group` to
