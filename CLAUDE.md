@@ -69,9 +69,10 @@ Done:
 - [x] Domain's target folder checked in KAS → Domain (owner confirmed 2026-11-26)
 - [x] Dedicated deploy FTP user created with that folder as its path (owner confirmed 2026-11-26)
 - [x] Let's Encrypt enabled (owner confirmed 2026-11-26)
+- [x] Three GitHub secrets added, deploys live: Actions runs green, site serves
+      over HTTPS with security headers, HTTP redirects to HTTPS (verified 2026-11-26)
 
-Open:
-- [ ] Three GitHub secrets added, first push done, Actions run green
+Open: nothing — setup is complete. See next steps below.
 
 ## Open decisions / next steps
 
